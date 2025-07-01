@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dictionary App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0;
+            background: white;
+        }
+
+        .header {
+            background-color: #2563eb;
+            color: white;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .header p {
+            font-size: 0.9rem;
+            margin-top: 4px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 16px;
+        }
+
+        .search-section {
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: #2563eb;
+        }
+
+        .search-btn, .random-btn {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .search-btn:hover, .random-btn:hover {
+            background-color: #1d4ed8;
+        }
+
+        .search-btn:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .random-btn {
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 12px 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .word-display {
+            margin-bottom: 20px;
+        }
+
+        .word-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .phonetics {
+            font-size: 1.1rem;
+            color: #6b7280;
+            font-style: italic;
+            margin-bottom: 16px;
+        }
+
+        .meanings {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .meaning {
+            background: #f9fafb;
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid #2563eb;
+        }
+
+        .part-of-speech {
+            background: #2563eb;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .definitions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .definition {
+            padding: 12px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .definition-text {
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .synonyms, .antonyms {
+            margin-top: 8px;
+        }
+
+        .synonyms span, .antonyms span {
+            font-weight: 600;
+            color: #2563eb;
+            font-size: 14px;
+        }
+
+        .word-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .word-tag {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .source-links {
+            margin-top: 20px;
+            padding: 16px;
+            background: #f3f4f6;
+            border-radius: 8px;
+        }
+
+        .source-links h4 {
+            margin-bottom: 8px;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .source-links a {
+            color: #2563eb;
+            text-decoration: none;
+            display: block;
+            margin: 4px 0;
+            font-size: 14px;
+            word-break: break-all;
+        }
+
+        .source-links a:hover {
+            text-decoration: underline;
+        }
+
+        .error {
+            text-align: center;
+            padding: 20px;
+            color: #dc2626;
+            background: #fef2f2;
+            border-radius: 8px;
+            border: 1px solid #fecaca;
+        }
+
+        @media (max-width: 480px) {
+            .search-form {
+                flex-direction: column;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+
+            .search-btn {
+                width: 100%;
+            }
+
+            .word-title {
+                font-size: 1.5rem;
+            }
+
+            .content {
+                padding: 12px;
+            }
+
+            .search-section {
+                padding: 12px;
+            }
+
+            .meaning {
+                padding: 12px;
+            }
+
+            .definition {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Dictionary App</h1>
+            <p>Search words or discover new ones</p>
+        </div>
+
+        <div class="content">
+            <div class="search-section">
+                <form class="search-form" onsubmit="searchWord(event)">
+                    <input
+                        type="text"
+                        id="search-input"
+                        class="search-input"
+                        placeholder="Enter a word..."
+                        required
+                    >
+                    <button type="submit" class="search-btn" id="search-btn">
+                        Search
+                    </button>
+                </form>
+
+                <div class="divider">OR</div>
+
+                <button class="random-btn" onclick="loadRandomWord()">
+                    Get Random Word
+                </button>
+            </div>
+
+            <div id="loading" class="loading" style="display: none;">
+                <p>Loading...</p>
+            </div>
+
+            <div id="word-content" style="display: none;">
+                <!-- Word content will be inserted here -->
+            </div>
+
+            <div id="error" class="error" style="display: none;">
+                <p>Word not found. Try another word or get a random one!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function searchWord(event) {
+            event.preventDefault();
+
+            const searchInput = document.getElementById('search-input');
+            const word = searchInput.value.trim();
+
+            if (!word) return;
+
+            await loadWord(`/api/word/${encodeURIComponent(word)}`);
+        }
+
+        async function loadRandomWord() {
+            await loadWord('/api/word/random');
+        }
+
+        async function loadWord(url) {
+            const loadingEl = document.getElementById('loading');
+            const contentEl = document.getElementById('word-content');
+            const errorEl = document.getElementById('error');
+            const searchBtn = document.getElementById('search-btn');
+
+            // Show loading state
+            loadingEl.style.display = 'block';
+            contentEl.style.display = 'none';
+            errorEl.style.display = 'none';
+            searchBtn.disabled = true;
+            searchBtn.textContent = 'Searching...';
+
+            try {
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        throw new Error('Word not found');
+                    }
+                    throw new Error('Failed to fetch word');
+                }
+
+                const data = await response.json();
+                displayWord(data);
+
+                // Hide loading, show content
+                loadingEl.style.display = 'none';
+                contentEl.style.display = 'block';
+
+            } catch (error) {
+                console.error('Error:', error);
+
+                // Hide loading, show error
+                loadingEl.style.display = 'none';
+                errorEl.style.display = 'block';
+
+                // Update error message based on error type
+                if (error.message === 'Word not found') {
+                    errorEl.innerHTML = '<p>Word not found in dictionary. Try another word!</p>';
+                } else {
+                    errorEl.innerHTML = '<p>Something went wrong. Please try again.</p>';
+                }
+            } finally {
+                // Reset search button
+                searchBtn.disabled = false;
+                searchBtn.textContent = 'Search';
+            }
+        }
+
+        function displayWord(data) {
+            const contentEl = document.getElementById('word-content');
+
+            // Build phonetics display
+            let phoneticsHtml = '';
+            if (data.phonetics && data.phonetics.length > 0) {
+                const phonetic = data.phonetics.find(p => p.text) || data.phonetics[0];
+                if (phonetic && phonetic.text) {
+                    phoneticsHtml = `<div class="phonetics">${phonetic.text}</div>`;
+                }
+            }
+
+            // Build meanings HTML
+            let meaningsHtml = '';
+            if (data.meanings && data.meanings.length > 0) {
+                meaningsHtml = data.meanings.map(meaning => {
+                    let definitionsHtml = '';
+                    if (meaning.definitions && meaning.definitions.length > 0) {
+                        definitionsHtml = meaning.definitions.map(def => {
+                            let synonymsHtml = '';
+                            let antonymsHtml = '';
+
+                            if (def.synonyms && def.synonyms.length > 0) {
+                                synonymsHtml = `
+                                    <div class="synonyms">
+                                        <span>Synonyms:</span>
+                                        <div class="word-list">
+                                            ${def.synonyms.map(word => `<span class="word-tag">${word}</span>`).join('')}
+                                        </div>
+                                    </div>
+                                `;
+                            }
+
+                            if (def.antonyms && def.antonyms.length > 0) {
+                                antonymsHtml = `
+                                    <div class="antonyms">
+                                        <span>Antonyms:</span>
+                                        <div class="word-list">
+                                            ${def.antonyms.map(word => `<span class="word-tag">${word}</span>`).join('')}
+                                        </div>
+                                    </div>
+                                `;
+                            }
+
+                            return `
+                                <div class="definition">
+                                    <div class="definition-text">${def.definition}</div>
+                                    ${synonymsHtml}
+                                    ${antonymsHtml}
+                                </div>
+                            `;
+                        }).join('');
+                    }
+
+                    return `
+                        <div class="meaning">
+                            <div class="part-of-speech">${meaning.partOfSpeech}</div>
+                            <div class="definitions">
+                                ${definitionsHtml}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // Build source links
+            let sourceLinksHtml = '';
+            if (data.sourceUrls && data.sourceUrls.length > 0) {
+                sourceLinksHtml = `
+                    <div class="source-links">
+                        <h4>Sources:</h4>
+                        ${data.sourceUrls.map(url => `<a href="${url}" target="_blank">${url}</a>`).join('')}
+                    </div>
+                `;
+            }
+
+            contentEl.innerHTML = `
+                <div class="word-display">
+                    <div class="word-title">${data.word}</div>
+                    ${phoneticsHtml}
+                </div>
+                <div class="meanings">
+                    ${meaningsHtml}
+                </div>
+                ${sourceLinksHtml}
+            `;
+
+            // Clear search input after successful search
+            document.getElementById('search-input').value = '';
+        }
+
+        // Load a random word when page loads
+        document.addEventListener('DOMContentLoaded', loadRandomWord);
+    </script>
+</body>
+</html>
